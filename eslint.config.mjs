@@ -1,24 +1,32 @@
-import js from "@eslint/js";
-import globals from "globals";
-import { defineConfig } from "eslint/config";
-import prettierPlugin from "eslint-plugin-prettier";
+import js from '@eslint/js';
+import { defineConfig } from 'eslint/config';
+import globals from 'globals';
+import prettierPlugin from 'eslint-plugin-prettier';
+import prettierConfig from 'eslint-config-prettier';
 
 export default defineConfig([
   {
-    files: ["**/*.{js,mjs,cjs}"],
+    files: ['**/*.{js,mjs,cjs}'],
+    ignores: ['dist', 'node_modules', 'eslint.config.mjs'],
     plugins: {
-      prettier: prettierPlugin
-    },
-    extends: [
-      js.configs.recommended, // recommended JS rules
-      "plugin:prettier/recommended" // enables eslint-plugin-prettier + config
-    ],
-    rules: {
-      "prettier/prettier": "error" // show Prettier formatting issues as ESLint errors
+      prettier: prettierPlugin,
     },
     languageOptions: {
-      globals: globals.browser, // enables browser-specific globals like `window`
-      sourceType: "script" // since you're not using ES modules
-    }
-  }
+      globals: globals.browser,
+      sourceType: 'script',
+    },
+    rules: {
+      ...js.configs.recommended.rules,
+      'prettier/prettier': 'error',
+    },
+  },
+  {
+    files: ['webpack.config.js'],
+    ignores: ['node_modules', 'dist', 'eslint.config.mjs'],
+    languageOptions: {
+      globals: globals.node,
+      sourceType: 'commonjs',
+    },
+  },
+  prettierConfig,
 ]);
